@@ -1,5 +1,6 @@
 import config from '../config';
 import EventEmitter from 'eventemitter3';
+import { StarWarsUniverse } from './custom/StarWarsUniverse';
 
 const EVENTS = {
   APP_READY: 'app_ready',
@@ -31,7 +32,16 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
+    const starWarsUniverse = new StarWarsUniverse();
 
+    starWarsUniverse.addListener(StarWarsUniverse.events.UNIVERSE_POPULATED, () => {
+      // eslint-disable-next-line no-console
+      console.log(`Received UNIVERSE_POPULATED event`);
+      // eslint-disable-next-line no-console
+      console.log(starWarsUniverse);
+    });
+    this.data.universe = starWarsUniverse;
+    await starWarsUniverse.init();
     this.emit(Application.events.APP_READY);
   }
 }
